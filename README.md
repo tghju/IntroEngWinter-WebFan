@@ -255,3 +255,6 @@ Take your time. Read carefully.
 If something breaks, trace the path of information:
 Browser → Wi-Fi → Pico → Motor.
 
+### Extension ideas
+
+Get see if you can modify the code to create a control over another actuator like an LED or a buzzer.
