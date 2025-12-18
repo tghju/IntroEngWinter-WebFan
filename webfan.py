@@ -9,6 +9,7 @@ en_pwm.duty_u16(0)
 
 motor_in1 = Pin(14, Pin.OUT)
 motor_in2 = Pin(15, Pin.OUT)
+led = Pin(10, Pin.OUT)
 
 def motor_off():
     '''Set each motor pin to 0 and then set the duty cycle to the enable pin
@@ -17,6 +18,7 @@ def motor_off():
     motor_in1.value(0)
     motor_in2.value(0)
     en_pwm.duty_u16(0)
+    led.value(0)
 
 def motor_forward():
     '''Set each motor_in1 pin to 1, and motor_in2 to 0.
@@ -24,17 +26,18 @@ def motor_forward():
     ### YOUR CODE HERE
     motor_in1.value(1)
     motor_in2.value(0)
+    led.value(1)
     
 def set_speed(percent):
     '''Set the en_pwm to the given percent of 65535.
     REMEMBER THAT percent in this case is a number between 0 and 100'''
     ### YOUR CODE HERE
-    en_pwm.duty_u16(percent*65535)/100)
+    en_pwm.duty_u16(int((percent*65535)/100))
     
 # ---- Wi-Fi Access Point ----
 ap = network.WLAN(network.AP_IF)
+ap.config(essid="FANIX", password="pico1234")
 ap.active(True)
-ap.config(essid="IX-FAN", password="pico1234")
 print("AP IP:", ap.ifconfig()[0])
 
 # ---- HTML page ----
@@ -77,6 +80,7 @@ state = "OFF"
 speed = 0
 motor_off()
 
+
 while True:
     cl, addr = s.accept()
     request = cl.recv(1024).decode()
@@ -90,14 +94,14 @@ while True:
         
         ### YOUR CODE HERE
         
-        motor_on()
-        state = "ON"
-        set_speed()
+        motor_forward()
+        set_speed(30)
+        fan_state = "ON"
         
     elif "/?fan=off" in request:
         motor_off()
-        state = "OFF"
         speed = 0
+        fan_state = "OFF"
 
     # Speed change (live)
     if "/set?speed=" in request:
