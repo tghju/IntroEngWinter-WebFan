@@ -2,6 +2,7 @@ import network
 import socket
 from machine import Pin, PWM
 
+
 # ---- Motor control pins ----
 en_pwm = PWM(Pin(13)) 
 en_pwm.freq(1000)
@@ -9,7 +10,9 @@ en_pwm.duty_u16(0)
 
 motor_in1 = Pin(14, Pin.OUT)
 motor_in2 = Pin(15, Pin.OUT)
-led = Pin(10, Pin.OUT)
+#led = Pin(10, Pin.OUT)
+led = PWM(Pin(10))
+led.freq(1000)
 
 def motor_off():
     '''Set each motor pin to 0 and then set the duty cycle to the enable pin
@@ -18,7 +21,8 @@ def motor_off():
     motor_in1.value(0)
     motor_in2.value(0)
     en_pwm.duty_u16(0)
-    led.value(0)
+    #led.value(0)
+    led.duty_u16(0)
 
 def motor_forward():
     '''Set each motor_in1 pin to 1, and motor_in2 to 0.
@@ -26,13 +30,14 @@ def motor_forward():
     ### YOUR CODE HERE
     motor_in1.value(1)
     motor_in2.value(0)
-    led.value(1)
+    #led.value(1)
     
 def set_speed(percent):
     '''Set the en_pwm to the given percent of 65535.
     REMEMBER THAT percent in this case is a number between 0 and 100'''
     ### YOUR CODE HERE
     en_pwm.duty_u16(int((percent*65535)/100))
+    led.duty_u16(int(percent*65535/100))
     
 # ---- Wi-Fi Access Point ----
 ap = network.WLAN(network.AP_IF)
